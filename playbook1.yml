@@ -1,0 +1,20 @@
+---
+- hosts: redhat
+  become: yes
+  remote_user: sysadmin
+
+  tasks:
+
+  - name: Update all available packages 
+    yum:
+      name: "*"
+      state: latest
+    register: result
+
+  - name: Show updates result
+    debug:
+      var: result
+
+  - name: Restart server
+    reboot:
+    when: result.changed
