@@ -1,20 +1,27 @@
 ---
-- hosts: redhat
+- hosts: linux
   become: yes
   remote_user: sysadmin
 
   tasks:
 
-  - name: Update all available packages 
+  - name: Update all available packages for RedHat servers
     yum:
       name: "*"
       state: latest
-    register: result
+    notify: Restart server
+    when: ansible_os_family == "RedHat"
 
-  - name: Show updates result
-    debug:
-      var: result
+  - name: Update all available packages for Debian servers
+    apt:
+      name: "*"
+      state: latest
+      update_cache: yes
+    notify: Restart server
+    when: ansible_os_family == "Debian" 
+
+
+  handlers:
 
   - name: Restart server
-    reboot:
-    when: result.changed
+    reboot:  
