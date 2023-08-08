@@ -3,12 +3,10 @@
   become: yes
   remote_user: sysadmin
 
-  tasks:
+  roles:
+  - webserver
 
-  - name: Install apache
-    yum:
-      name: httpd
-      state: present
+  tasks:
 
   - name: Create virtualhost configuration directory
     file:
@@ -27,21 +25,6 @@
       path: /etc/httpd/conf/httpd.conf
       line: IncludeOptional /etc/httpd/vhosts.d/*.conf  
   
-  - name: Open firewall ports
-    firewalld: 
-      service: "{{ item }}"
-      state: enabled
-      permanent: true
-      immediate: true
-    loop:
-    - http
-    - https    
-
-  - name: Start and enabled httpd service
-    service:
-      name: httpd
-      enabled: true
-      state: started
 
   - name: Copy index file
     template:

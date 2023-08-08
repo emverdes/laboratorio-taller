@@ -1,0 +1,23 @@
+---
+# tasks file for roles/webserver
+- name: Install apache
+  yum:
+    name: httpd
+    state: present
+
+- name: Open firewall ports
+  firewalld: 
+    service: "{{ item }}"
+    state: enabled
+    permanent: true
+    immediate: true
+  loop:
+  - http
+  - https    
+
+- name: Start and enabled httpd service
+  service:
+    name: "{{ item }}"
+    enabled: true
+    state: started
+  loop: "{{ services }}"
